@@ -17,14 +17,14 @@
         index = streams.home.length -1;
         while(index >= last){
           var tweet = streams.home[index];
-      var $tweet = $('<div></div>');
+          var $tweet = $('<div></div>');
           $tweet.text('@' + tweet.user + ': ' + tweet.message);
           $tweet.appendTo($body);
           index -= 1;
         }
         last = index;
       }
-
+      setInterval( function(){display();} , 3000)
 
       $(document).ready(function(){
         display();
