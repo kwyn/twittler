@@ -10,27 +10,26 @@
     <script>
       var index = 0;
       var last = 0;
-      var $body = $('body');
-      
+      var $body = $('body');      
 
       var display = function(){
-        index = streams.home.length -1;
+        index = streams.home.length-1;
+        last = index;
         while(index >= last){
           var tweet = streams.home[index];
           var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
+          $tweet.html('<div> @ ' + tweet.user + ': ' + tweet.message + '</div> <div> ' + tweet.created_at + '</div>');
+          $tweet.prependTo($body.first('div'));
           index -= 1;
         }
-        last = index;
-      }
-      setInterval( function(){display();} , 3000)
+      }      
 
       $(document).ready(function(){
         display();
         $('.update').on('click', display);
       });
 
+      setInterval( function(){display();} , 3000)
       
 
     </script>
