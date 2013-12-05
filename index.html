@@ -7,6 +7,7 @@
     <script src="moment-with-langs.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href"css/twittler.css" rel="stylesheet">
 
   </head>
   <body>
@@ -23,7 +24,7 @@
       var format = "ddd MMM DD YYYY HH:mm:ss"
       var display = function(){
         $body.empty();
-        $body.html('<div class="container"> <button class="update">Get New Tweets</button> </div>')
+        $body.html('<div class="container"> </div>')
         index = streams.home.length-1;
         
         if( index < 10){
@@ -34,17 +35,18 @@
 
         while(index >= last){
           var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.html('<div> @ ' + tweet.user + ': ' + tweet.message + '</div> <div> ' + moment(tweet.created_at).fromNow() + '</div>');
+          var $tweet = $('<div class="tweet"></div>');
+          $tweet.html(' <div class="row"> <div class="col-xs-8"><strong class="text-primary user"> @ ' + tweet.user + ': </strong> </div> <div class="col-xs-4 text-muted"> ' + moment(tweet.created_at).fromNow() + '</div> </div> <div class="row text-info">' + tweet.message + '</div>');
           $tweet.appendTo($body.first('div'));
           index -= 1;
         }
       }      
 
       $(document).ready(function(){
-        display();
-        $('.update').on('click', display);
+        display(); 
       });
+
+
 
       setInterval( function(){display();} , 30000)
       
