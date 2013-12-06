@@ -66,19 +66,23 @@
       $(document).ready(function(){
         //intial call to display tweets on page load
         display(); 
-        //click id="load" element to display new tweets. Reset counter
+
         $('#load').on('click', function(){
           display(); 
-          $(this).find("span").text('')
+          $(this).find('span').text('')
         });
+        
+        //click id="load" element to display new tweets. Reset counter
         //event handler for clikcing user name to display users timeline
-        $(".user").on('click',function(){
+        $(".tweetContainer").delegate('.user', 'click', function(){
           //grab name of user for user element
           var name = $(this).text();
-          //Call display sending in the user name
+          //Call display sending in the username
           display(name);
           console.log("user "+name+" clicked!");         
         });
+
+        $(".header").find("h3").on('click', function(){ display();} );
       });
 
       //update counter for newTweets
