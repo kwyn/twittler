@@ -7,6 +7,7 @@
     <script src="moment-with-langs.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/jumbotron-narrow.css" rel="stylesheet">
     <link href"css/twittler.css" rel="stylesheet">
 
   </head>
@@ -20,37 +21,90 @@
     <script>
       var index = 0;
       var last = 0;
-      var $body = $('body');      
+      var upToDate = 0;    
       var format = "ddd MMM DD YYYY HH:mm:ss"
+      
       var display = function(){
-        $body.empty();
-        $body.html('<div class="container"> </div>')
+        $(".tweetContainer").empty();
+
         index = streams.home.length-1;
         
+        upToDate = index;
+
         if( index < 10){
           last = index;
         }else{
           last = index - 10;
         }
-
+        console.log("display run");
         while(index >= last){
           var tweet = streams.home[index];
-          var $tweet = $('<div class="tweet"></div>');
-          $tweet.html(' <div class="row"> <div class="col-xs-8"><strong class="text-primary user"> @ ' + tweet.user + ': </strong> </div> <div class="col-xs-4 text-muted"> ' + moment(tweet.created_at).fromNow() + '</div> </div> <div class="row text-info">' + tweet.message + '</div>');
-          $tweet.appendTo($body.first('div'));
+          var tweetFormat= $( '<div class="tweet"> <div class="row"> <div class= "col-xs-4 text-primary" > <strong> @ <span class="user">' + tweet.user + '</span>: </strong> </div> <div class="col-xs-4 text-muted text-right"> ' + moment(tweet.created_at).fromNow() + '</div> </div> <div class="col-xs-12 text-info"><p>' + tweet.message + '</p></div></div>');
+
+          $(".tweetContainer").append(tweetFormat);
           index -= 1;
         }
-      }      
+      }
+
+      var checkNew = function(){
+        index = streams.home.length-1;
+        console.log(index +" "+ upToDate);
+        if(index > upToDate){
+          return index-upToDate;
+        }else{
+          return 0;
+        }
+      }
+
+      var showTimeline = function(userName){
+        timeline = streams.user[userName];
+        index = timeline.length;
+      }
 
       $(document).ready(function(){
+        
         display(); 
+
+        $('#load').on('click', function(){
+          display(); 
+          $(this).find("span").text('')
+        });
+
+        $(".user").on("click",function(){
+          var name = $(this).text();
+                   
+        });
       });
 
-
-
-      setInterval( function(){display();} , 30000)
+      setInterval(function(){
+        $(document).ready(function(){
+            newTweets = checkNew();
+            console.log(newTweets + " newTweets!")
+          if(newTweets > 0){
+            $("#load span").text(newTweets);
+          }
+        });
+      }, 3000);
       
 
     </script>
+
+    <div class = "container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li> <a> Compose </a> </li>
+          <li id="load"> <a > Load New <span class="text-danger"> </span></a> </li>
+        </ul>
+        <h3 class="text-muted">Twittler</h3>
+      </div>
+
+      <div class="row tweetContainer marketing">
+      </div>
+      
+      <div class="footer">
+        <p>&copy; Harley Kwyn 2013</p>
+      </div>
+    </div> <!--container-->
+
   </body>
 </html>
