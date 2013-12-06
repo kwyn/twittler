@@ -24,21 +24,28 @@
       var upToDate = 0;    
       var format = "ddd MMM DD YYYY HH:mm:ss"
       
-      var display = function(){
+      var display = function(username){
+        //empty tweet container of currently displayed tweets
         $(".tweetContainer").empty();
-
-        index = streams.home.length-1;
-        
-        upToDate = index;
+        //define index and tweet array for personal view and timeline view
+        if(username == undefined){
+          index = streams.home.length-1;
+          upToDate = index;
+          var tweetArray = streams.home;
+        }else{
+          index = streams.users[username].length-1
+          var tweetArray = streams.users[username];
+        }
 
         if( index < 10){
-          last = index;
+          last = 0;
         }else{
           last = index - 10;
         }
-        console.log("display run");
+
+        console.log("display run. Last = " + last + " index = " + index);
         while(index >= last){
-          var tweet = streams.home[index];
+          var tweet = tweetArray[index];
           var tweetFormat= $( '<div class="tweet"> <div class="row"> <div class= "col-xs-4 text-primary" > <strong> @ <span class="user">' + tweet.user + '</span>: </strong> </div> <div class="col-xs-4 text-muted text-right"> ' + moment(tweet.created_at).fromNow() + '</div> </div> <div class="col-xs-12 text-info"><p>' + tweet.message + '</p></div></div>');
 
           $(".tweetContainer").append(tweetFormat);
@@ -48,7 +55,6 @@
 
       var checkNew = function(){
         index = streams.home.length-1;
-        console.log(index +" "+ upToDate);
         if(index > upToDate){
           return index-upToDate;
         }else{
@@ -56,30 +62,29 @@
         }
       }
 
-      var showTimeline = function(userName){
-        timeline = streams.user[userName];
-        index = timeline.length;
-      }
-
+      //contains functions that need the DOM to be loaded
       $(document).ready(function(){
-        
+        //intial call to display tweets on page load
         display(); 
-
+        //click id="load" element to display new tweets. Reset counter
         $('#load').on('click', function(){
           display(); 
           $(this).find("span").text('')
         });
-
-        $(".user").on("click",function(){
+        //event handler for clikcing user name to display users timeline
+        $(".user").on('click',function(){
+          //grab name of user for user element
           var name = $(this).text();
-                   
+          //Call display sending in the user name
+          display(name);
+          console.log("user "+name+" clicked!");         
         });
       });
 
+      //update counter for newTweets
       setInterval(function(){
         $(document).ready(function(){
             newTweets = checkNew();
-            console.log(newTweets + " newTweets!")
           if(newTweets > 0){
             $("#load span").text(newTweets);
           }
